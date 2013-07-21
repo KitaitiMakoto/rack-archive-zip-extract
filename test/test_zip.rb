@@ -46,14 +46,18 @@ class TestZip < Test::Unit::TestCase
   end
 
   def test_extension_of_file_can_be_changed
-    zip = Rack::Zip.new(__dir__, extensions: %w[.ext])
+    ext = Rack::Zip.new(__dir__, extensions: %w[.ext])
+    response = Rack::MockRequest.new(ext).get('/sample/sample.txt')
 
-    pend
+    assert_equal 200, response.status
+    assert_equal "This is a plain text file in sample.ext.\n", response.body
   end
 
   def test_multiple_extensions_for_zip_file_can_be_specified
-    zip = Rack::Zip.new(__dir__, extensions: %w[.ext .zip])
+    multi = Rack::Zip.new(__dir__, extensions: %w[.ext .zip])
+    response = Rack::MockRequest.new(multi).get('/sample/sample.txt')
 
-    pend
+    assert_equal 200, response.status
+    assert_equal "This is a plain text file in sample.ext.\n", response.body
   end
 end
