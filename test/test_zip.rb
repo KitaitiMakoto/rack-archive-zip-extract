@@ -64,4 +64,13 @@ class TestZip < Test::Unit::TestCase
     assert_equal 200, response.status
     assert_equal "This is a plain text file in sample.ext.\n", response.body
   end
+
+  data(
+    'path to zip file' => ['/sample.zip', [nil, '']]
+  )
+  def test_find_zip_file(data)
+    path_info, expected = data
+
+    assert_equal expected, @zip.find_zip_file(path_info)
+  end
 end

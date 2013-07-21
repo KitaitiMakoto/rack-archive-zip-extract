@@ -61,14 +61,14 @@ class Rack::Zip
     current = @root
     zip_file = nil
     while part = clean.shift
-      current += part
       @extensions.each do |ext|
-        with_ext = current.sub_ext(ext)
+        with_ext = current + "#{part}#{ext}"
         if with_ext.file?
           zip_file = with_ext
           break
         end
       end
+      current += part
       break if zip_file
     end
     return zip_file, File.join(clean)
