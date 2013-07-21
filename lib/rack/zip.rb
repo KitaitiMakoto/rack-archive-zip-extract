@@ -30,15 +30,16 @@ class Rack::Zip
   def call(env)
     return [405, {'Allow' => ALLOWED_VERBS.join(', ')}, []] unless ALLOWED_VERBS.include? env['REQUEST_METHOD']
 
-    zip_file_path, file_in_zip = find_zip_file_and_inner_path(Rack::Utils.unescape(env['PATH_INFO']))
-    return [404, {}, []] if zip_file_path.nil? or file_in_zip.empty?
-
-    body, length = extract_content_body_and_length_from_zip_archive(zip_file_path, file_in_zip)
+    path_info = Rack::Utils.unescape(env['PATH_INFO'])
+    body, length = extract_content_body_and_length_from_zip_archive(
+      *find_zip_file_and_inner_path(path_info)
+    )
     return [404, {}, []] if body.nil?
+
     [
      200,
      {
-       'Content-Type' => Rack::Mime.mime_type(File.extname(file_in_zip)),
+       'Content-Type' => Rack::Mime.mime_type(File.extname(path_info)),
        'Content-Length' => length.to_s
      },
      [body]
