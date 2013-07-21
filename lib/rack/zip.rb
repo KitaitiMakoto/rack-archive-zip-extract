@@ -17,8 +17,9 @@ class Rack::Zip
 
   attr_reader :root
 
-  # @param root [Pathname|#to_path|String]
+  # @param root [Pathname, #to_path, String] path to document root
   # @param extensions [Array<String>] extensions which is recognized as a zip file
+  # @raise [ArgumentError] if +root+ is not a directory
   def initialize(root, extensions: %w[.zip])
     @root = root.kind_of?(Pathname) ? root : Pathname(root)
     @root = @root.expand_path
