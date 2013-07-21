@@ -66,11 +66,16 @@ class TestZip < Test::Unit::TestCase
   end
 
   data(
-    'path to zip file' => ['/sample.zip', [nil, '']]
+    'path to zip file'                             => ['/sample.zip',            [nil,          '']],
+    'path to non-existing file'                    => ['/non-existing',          [nil,          '']],
+    'path ending with slash'                       => ['/sample/',               ['sample.zip', '']],
+    'path including file name in zip archive'      => ['/sample/inner.txt',      ['sample.zip', 'inner.txt']],
+    'path including directory name in zip archive' => ['/sample/inner/file.txt', ['sample.zip', 'inner/file.txt']]
   )
   def test_find_zip_file(data)
-    path_info, expected = data
+    path_info, (path, file_in_zip) = data
+    path &&= (@zip.root + path)
 
-    assert_equal expected, @zip.find_zip_file(path_info)
+    assert_equal [path, file_in_zip], @zip.find_zip_file(path_info)
   end
 end
