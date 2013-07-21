@@ -15,6 +15,8 @@ class Rack::Zip
   SEPS = Rack::File::SEPS
   ALLOWED_VERBS = Rack::File::ALLOWED_VERBS
 
+  attr_reader :root
+
   # @param root [Pathname|#to_path|String]
   # @param extensions [Array<String>] extensions which is recognized as a zip file
   def initialize(root, extensions: %w[.zip])
