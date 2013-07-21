@@ -9,6 +9,8 @@ require 'zipruby'
 #   run Rack::Zip
 # @example
 #   run Rack::Zip, :extensions => %w[.epub .zip .jar .odt .docx]
+# @note
+#   {Rack::Zip Rack::Zip} does not serve a zip file itself. Use Rack::File or so to do so.
 class Rack::Zip
   SEPS = Rack::File::SEPS
   ALLOWED_VERBS = Rack::File::ALLOWED_VERBS
