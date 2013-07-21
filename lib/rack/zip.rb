@@ -83,14 +83,6 @@ class Rack::Zip
   # @return [Pathname] file path when file with extension exists
   # @return [nil] when file with extension doesn't exist
   def find_existing_file_with_extension(directory_path, basename, extensions)
-    file_path = nil
-    extensions.each do |ext|
-      with_ext = directory_path + "#{basename}#{ext}"
-      if with_ext.file?
-        file_path = with_ext
-        break
-      end
-    end
-    file_path
+    extensions.lazy.map {|ext| directory_path + "#{basename}#{ext}"}.find(&:file?)
   end
 end
