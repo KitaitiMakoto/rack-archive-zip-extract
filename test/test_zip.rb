@@ -78,4 +78,11 @@ class TestZip < Test::Unit::TestCase
 
     assert_equal [path, file_in_zip], @zip.find_zip_file(path_info)
   end
+
+  def test_use_former_extension_when_same_basename_specified
+    multi = Rack::Zip.new(__dir__, extensions: %w[.ext .zip])
+    file_path, _ = multi.find_zip_file('/sample/sample.txt')
+
+    assert_equal multi.root + 'sample.ext', file_path
+  end
 end
