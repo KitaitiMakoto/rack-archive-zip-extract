@@ -27,13 +27,13 @@ class Rack::Zip
   end
 
   def call(env)
-    return [405, {'Allow' => ALLOWED_VERBS.join(', ')}, ['']] unless ALLOWED_VERBS.include? env['REQUEST_METHOD']
+    return [405, {'Allow' => ALLOWED_VERBS.join(', ')}, []] unless ALLOWED_VERBS.include? env['REQUEST_METHOD']
 
     zip_file_path, file_in_zip = find_zip_file_and_inner_path(Rack::Utils.unescape(env['PATH_INFO']))
     return [404, {}, []] if zip_file_path.nil? or file_in_zip.empty?
 
-    body = ''
-    length = 0
+    body = nil
+    length = nil
     Zip::Archive.open zip_file_path.to_path do |archive|
       return [404, {}, []] if archive.locate_name(file_in_zip) < 0
       archive.fopen file_in_zip do |file|
