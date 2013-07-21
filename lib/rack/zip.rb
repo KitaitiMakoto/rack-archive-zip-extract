@@ -63,6 +63,7 @@ class Rack::Zip
   # @param inner_path [String] path to file in zip archive
   # @return [Array] a pair of content body and length
   def extract_content_body_and_length_from_zip_archive(zip_file_path, inner_path)
+    return [nil, nil] if zip_file_path.nil? or inner_path.empty?
     Zip::Archive.open zip_file_path.to_path do |archive|
       return [nil, nil] if archive.locate_name(inner_path) < 0
       archive.fopen inner_path do |file|
