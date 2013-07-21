@@ -4,11 +4,11 @@ require 'rack/file'
 require 'rack/mime'
 require 'zipruby'
 
-# Rack::Zip is a Rack application which serves files in zip archives.
+# {Rack::Zip Rack::Zip} is a Rack application which serves files in zip archives.
 # @example
-#   run Rack::Zip
+#   run Rack::Zip.new('path/to/docroot')
 # @example
-#   run Rack::Zip, :extensions => %w[.epub .zip .jar .odt .docx]
+#   run Rack::Zip.new('path/to/docroot', extensions: %w[.epub .zip .jar .odt .docx])
 # @note
 #   {Rack::Zip Rack::Zip} does not serve a zip file itself. Use Rack::File or so to do so.
 class Rack::Zip
