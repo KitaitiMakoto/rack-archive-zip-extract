@@ -35,12 +35,12 @@ class Rack::Zip
     return [404, {}, []] if body.nil?
 
     [
-     200,
-     {
-       'Content-Type' => Rack::Mime.mime_type(File.extname(path_info)),
-       'Content-Length' => body.bytesize.to_s
-     },
-     [body]
+      200,
+      {
+        'Content-Type' => Rack::Mime.mime_type(File.extname(path_info)),
+        'Content-Length' => body.bytesize.to_s
+      },
+      [body]
     ]
   end
 
