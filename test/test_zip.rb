@@ -10,13 +10,13 @@ class TestZip < Test::Unit::TestCase
   end
 
   def test_request_to_file_in_zip_returns_200
-    response = Rack::MockRequest.new(@zip).get('/fixtures/sample.txt')
+    response = Rack::MockRequest.new(@zip).get('/sample/sample.txt')
 
     assert_equal 200, response.status
   end
 
   def test_request_to_file_in_zip_returns_content
-    response = Rack::MockRequest.new(@zip).get('/fixtures/sample.txt')
+    response = Rack::MockRequest.new(@zip).get('/sample/sample.txt')
 
     assert_equal "This is a plain text file.\n", response.body
   end
@@ -27,7 +27,7 @@ class TestZip < Test::Unit::TestCase
    %w[.xml  application/xml application_xml]
   ].each do |(ext, content_type, underscored)|
     define_method "test_request_to_file_with_extension_#{ext}_returns_content_type_#{underscored}" do
-      response = Rack::MockRequest.new(@zip).get("/fixtures/sample#{ext}")
+      response = Rack::MockRequest.new(@zip).get("/sample/sample#{ext}")
 
       assert_equal content_type, response['Content-Type']
     end
@@ -40,7 +40,7 @@ class TestZip < Test::Unit::TestCase
   end
 
   def test_request_to_file_in_zip_which_not_exist_returns_404
-    response = Rack::MockRequest.new(@zip).get('/fixtures/non-existing')
+    response = Rack::MockRequest.new(@zip).get('/sample/non-existing')
 
     assert_equal 404, response.status
   end

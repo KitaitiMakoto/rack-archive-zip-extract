@@ -8,7 +8,7 @@ Rake::TestTask.new
 namespace :test do
   desc 'Build test fixtures'
   task :build do
-    sh 'zip -rj test/fixtures.zip test/fixtures'
+    sh 'zip -rj test/sample.zip test/fixtures/sample-zip'
   end
 end
 
