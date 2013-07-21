@@ -72,16 +72,16 @@ class TestZip < Test::Unit::TestCase
     'path including file name in zip archive'      => ['/sample/inner.txt',      ['sample.zip', 'inner.txt']],
     'path including directory name in zip archive' => ['/sample/inner/file.txt', ['sample.zip', 'inner/file.txt']]
   )
-  def test_find_zip_file(data)
+  def test_find_zip_file_and_inner_path(data)
     path_info, (path, file_in_zip) = data
     path &&= (@zip.root + path)
 
-    assert_equal [path, file_in_zip], @zip.find_zip_file(path_info)
+    assert_equal [path, file_in_zip], @zip.find_zip_file_and_inner_path(path_info)
   end
 
   def test_use_former_extension_when_same_basename_specified
     multi = Rack::Zip.new(__dir__, extensions: %w[.ext .zip])
-    file_path, _ = multi.find_zip_file('/sample/sample.txt')
+    file_path, _ = multi.find_zip_file_and_inner_path('/sample/sample.txt')
 
     assert_equal multi.root + 'sample.ext', file_path
   end

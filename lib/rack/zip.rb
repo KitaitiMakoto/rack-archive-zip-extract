@@ -29,7 +29,7 @@ class Rack::Zip
   def call(env)
     return [405, {'Allow' => ALLOWED_VERBS.join(', ')}, ['']] unless ALLOWED_VERBS.include? env['REQUEST_METHOD']
 
-    zip_file_path, file_in_zip = find_zip_file(Rack::Utils.unescape(env['PATH_INFO']))
+    zip_file_path, file_in_zip = find_zip_file_and_inner_path(Rack::Utils.unescape(env['PATH_INFO']))
     return [404, {}, []] if zip_file_path.nil? or file_in_zip.empty?
 
     body = ''
@@ -53,7 +53,7 @@ class Rack::Zip
 
   # @param path_info [String]
   # @return [Array] a pair of Pathname(zip file) and String(file path in zip archive)
-  def find_zip_file(path_info)
+  def find_zip_file_and_inner_path(path_info)
     path_parts = path_info_to_clean_parts(path_info)
     current = @root
     zip_file = nil
