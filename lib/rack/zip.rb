@@ -54,15 +54,10 @@ class Rack::Zip
   # @param path_info [String]
   # @return [Array] a pair of Pathname(zip file) and String(file path in zip archive)
   def find_zip_file(path_info)
-    parts = path_info.split SEPS
-    clean = []
-    parts.each do |part|
-      next if part.empty? || part == '.'
-      part == '..' ? clean.pop : clean << part
-    end
+    path_parts = path_info_to_clean_parts(path_info)
     current = @root
     zip_file = nil
-    while part = clean.shift
+    while part = path_parts.shift
       @extensions.each do |ext|
         with_ext = current + "#{part}#{ext}"
         if with_ext.file?
@@ -73,6 +68,18 @@ class Rack::Zip
       current += part
       break if zip_file
     end
-    return zip_file, File.join(clean)
+    return zip_file, File.join(path_parts)
+  end
+
+  # @param path_info [String]
+  # @return [Array<String>] parts of clean path
+  def path_info_to_clean_parts(path_info)
+    parts = path_info.split SEPS
+    clean = []
+    parts.each do |part|
+      next if part.empty? || part == '.'
+      part == '..' ? clean.pop : clean << part
+    end
+    clean
   end
 end
