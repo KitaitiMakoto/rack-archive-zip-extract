@@ -31,16 +31,14 @@ class Rack::Zip
     return [405, {'Allow' => ALLOWED_VERBS.join(', ')}, []] unless ALLOWED_VERBS.include? env['REQUEST_METHOD']
 
     path_info = Rack::Utils.unescape(env['PATH_INFO'])
-    body, length = extract_content_body_and_length_from_zip_archive(
-      *find_zip_file_and_inner_path(path_info)
-    )
+    body = extract_content(*find_zip_file_and_inner_path(path_info))
     return [404, {}, []] if body.nil?
 
     [
      200,
      {
        'Content-Type' => Rack::Mime.mime_type(File.extname(path_info)),
-       'Content-Length' => length.to_s
+       'Content-Length' => body.bytesize.to_s
      },
      [body]
     ]
@@ -63,12 +61,12 @@ class Rack::Zip
   # @param zip_file_path [Pathname] path to zip file
   # @param inner_path [String] path to file in zip archive
   # @return [Array] a pair of content body and length
-  def extract_content_body_and_length_from_zip_archive(zip_file_path, inner_path)
-    return [nil, nil] if zip_file_path.nil? or inner_path.empty?
+  def extract_content(zip_file_path, inner_path)
+    return if zip_file_path.nil? or inner_path.empty?
     Zip::Archive.open zip_file_path.to_path do |archive|
-      return [nil, nil] if archive.locate_name(inner_path) < 0
+      return if archive.locate_name(inner_path) < 0
       archive.fopen inner_path do |file|
-        return [file.read, file.size]
+        return file.read
       end
     end
   end
