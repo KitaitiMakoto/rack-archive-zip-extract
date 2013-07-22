@@ -49,6 +49,7 @@ class Rack::Zip
   end
 
   # @param path_info [String]
+  # @param extension [String]
   # @return [Array] a pair of Pathname(zip file) and String(file path in zip archive)
   def find_zip_file_and_inner_path(path_info, extension)
     path_parts = path_info_to_clean_parts(path_info)
@@ -91,7 +92,7 @@ class Rack::Zip
 
   # @param directory_path [Pathname] directory path to find file
   # @param basename [String] file name without extension
-  # @param extensions [Array<String>] list of extension candidates, to be joined with +basename+
+  # @param extension [String] extension to be joined with +basename+
   # @return [Pathname] file path when file with extension exists
   # @return [nil] when file with extension doesn't exist
   def find_existing_file_with_extension(directory_path, basename, extension)
