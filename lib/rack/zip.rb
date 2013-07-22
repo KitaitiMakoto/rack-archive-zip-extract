@@ -31,6 +31,7 @@ class Rack::Zip
     return [405, {'Allow' => ALLOWED_VERBS.join(', ')}, []] unless ALLOWED_VERBS.include? env['REQUEST_METHOD']
 
     path_info = Rack::Utils.unescape(env['PATH_INFO'])
+    zip_file = nil
     body = nil
     @extensions.each do |ext|
       zip_file, inner_path = find_zip_file_and_inner_path(path_info, ext)
@@ -43,7 +44,8 @@ class Rack::Zip
       200,
       {
         'Content-Type' => Rack::Mime.mime_type(::File.extname(path_info)),
-        'Content-Length' => body.bytesize.to_s
+        'Content-Length' => body.bytesize.to_s,
+        'Last-Modified' => zip_file.mtime
       },
       [body]
     ]
