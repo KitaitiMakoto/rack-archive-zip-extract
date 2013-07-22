@@ -49,6 +49,7 @@ class Rack::Zip
   end
 
   # @param path_info [String]
+  # @param extension [String]
   # @return [Array] a pair of Pathname(zip file) and String(file path in zip archive)
   def find_zip_file_and_inner_path(path_info, extension)
     path_parts = path_info_to_clean_parts(path_info)
