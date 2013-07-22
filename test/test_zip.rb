@@ -13,6 +13,12 @@ class TestZip < Test::Unit::TestCase
     Rack::MockRequest.new(app).get(path)
   end
 
+  def test_request_to_file_in_zip_returns_content
+    response = request('/sample/sample.txt')
+
+    assert_equal "This is a plain text file.\n", response.body
+  end
+
   class TestStatusCode < self
     data(
       'file in zip'              => [200, '/sample/sample.txt'],
@@ -25,12 +31,6 @@ class TestZip < Test::Unit::TestCase
 
       assert_equal status_code, request(path_info).status
     end
-  end
-
-  def test_request_to_file_in_zip_returns_content
-    response = request('/sample/sample.txt')
-
-    assert_equal "This is a plain text file.\n", response.body
   end
 
   class TestContentType < self
