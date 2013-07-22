@@ -13,10 +13,24 @@ class TestZip < Test::Unit::TestCase
     Rack::MockRequest.new(app).get(path)
   end
 
-  def test_request_to_file_in_zip_returns_200
-    response = request('/sample/sample.txt')
+  class TestStatusCode < self
+    def test_request_to_file_in_zip_returns_200
+      response = request('/sample/sample.txt')
 
-    assert_equal 200, response.status
+      assert_equal 200, response.status
+    end
+
+    def test_request_to_zip_file_itself_returns_404
+      response = request('/fixtures.zip')
+
+      assert_equal 404, response.status
+    end
+
+    def test_request_to_file_in_zip_which_not_exist_returns_404
+      response = request('/sample/non-existing')
+
+      assert_equal 404, response.status
+    end
   end
 
   def test_request_to_file_in_zip_returns_content
@@ -37,18 +51,6 @@ class TestZip < Test::Unit::TestCase
 
       assert_equal content_type, response['Content-Type']
     end
-  end
-
-  def test_request_to_zip_file_itself_returns_404
-    response = request('/fixtures.zip')
-
-    assert_equal 404, response.status
-  end
-
-  def test_request_to_file_in_zip_which_not_exist_returns_404
-    response = request('/sample/non-existing')
-
-    assert_equal 404, response.status
   end
 
   def test_extension_of_file_can_be_changed
