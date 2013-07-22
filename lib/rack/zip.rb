@@ -33,7 +33,8 @@ class Rack::Zip
     path_info = Rack::Utils.unescape(env['PATH_INFO'])
     body = nil
     @extensions.each do |ext|
-      body = extract_content(*find_zip_file_and_inner_path(path_info, ext))
+      zip_file, inner_path = find_zip_file_and_inner_path(path_info, ext)
+      body = extract_content(zip_file, inner_path)
       break if body
     end
     return [404, {}, []] if body.nil?
