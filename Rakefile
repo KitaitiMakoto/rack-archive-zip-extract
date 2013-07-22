@@ -3,7 +3,9 @@ require 'rake/testtask'
 
 task :default => :test
 
-Rake::TestTask.new
+Rake::TestTask.new do |test|
+  test.options = '--no-show-detail-immediately --verbose'
+end
 
 namespace :test do
   desc 'Build test fixtures'
