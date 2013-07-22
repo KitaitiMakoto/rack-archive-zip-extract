@@ -56,11 +56,10 @@ class Rack::Zip
     current = @root
     zip_file = nil
     while part = path_parts.shift
-      zip_file = find_existing_file_with_extension(current, part, extension)
-      return zip_file, ::File.join(path_parts) if zip_file
+      zip_file = current + "#{part}#{extension}"
+      return zip_file, ::File.join(path_parts) if zip_file.file?
       current += part
     end
-    return zip_file, ::File.join(path_parts)
   end
 
   # @param zip_file_path [Pathname] path to zip file
