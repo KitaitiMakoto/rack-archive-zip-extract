@@ -19,6 +19,13 @@ class TestZip < Test::Unit::TestCase
     assert_equal "This is a plain text file.\n", response.body
   end
 
+  def test_request_to_file_in_zip_returns_last_modified
+    response = request('/sample/sample.txt')
+    expected = File.mtime(File.join(__dir__, 'sample.zip')).httpdate
+
+    assert_equal expected, response['Last-Modified']
+  end
+
   class TestStatusCode < self
     data(
       'file in zip'              => [200, '/sample/sample.txt'],
