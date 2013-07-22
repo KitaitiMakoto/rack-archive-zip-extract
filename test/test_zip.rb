@@ -68,5 +68,11 @@ class TestZip < Test::Unit::TestCase
       assert_equal 200, response.status
       assert_equal "This is a plain text file in sample.ext.\n", response.body
     end
+
+    def test_fallback_to_next_extension_when_file_not_exit_in_zip_archive
+      response = request('/sample/sample.html', @multi)
+
+      assert_equal 200, response.status
+    end
   end
 end
