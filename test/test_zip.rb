@@ -57,6 +57,7 @@ class TestZip < Test::Unit::TestCase
 
   class TestMultipleExtensions < self
     def setup
+      super
       @multi = Rack::Zip.new(__dir__, extensions: %w[.ext .zip])
     end
 
