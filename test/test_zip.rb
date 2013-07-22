@@ -14,22 +14,16 @@ class TestZip < Test::Unit::TestCase
   end
 
   class TestStatusCode < self
-    def test_request_to_file_in_zip_returns_200
-      response = request('/sample/sample.txt')
+    data(
+      'file in zip'              => [200, '/sample/sample.txt'],
+      'zip file itself'          => [404, '/sample.zip'],
+      'non-existent file in zip' => [404, '/sample/non-existent']
+    )
 
-      assert_equal 200, response.status
-    end
+    def test_status_code(data)
+      status_code, path_info = data
 
-    def test_request_to_zip_file_itself_returns_404
-      response = request('/fixtures.zip')
-
-      assert_equal 404, response.status
-    end
-
-    def test_request_to_file_in_zip_which_not_exist_returns_404
-      response = request('/sample/non-existing')
-
-      assert_equal 404, response.status
+      assert_equal status_code, request(path_info).status
     end
   end
 
