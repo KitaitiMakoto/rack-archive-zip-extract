@@ -74,7 +74,7 @@ class TestZip < Test::Unit::TestCase
 
     def test_find_zip_file_and_inner_path(data)
       path_info, path, file_in_zip = data
-      path &&= (@zip.root + path)
+      path &&= @zip.root + path
 
       assert_equal [path, file_in_zip], @zip.find_zip_file_and_inner_path(path_info)
     end
