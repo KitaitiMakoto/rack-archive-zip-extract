@@ -55,12 +55,24 @@ class TestZip < Test::Unit::TestCase
     assert_equal "This is a plain text file in sample.ext.\n", response.body
   end
 
-  def test_multiple_extensions_for_zip_file_can_be_specified
-    multi = Rack::Zip.new(__dir__, extensions: %w[.ext .zip])
-    response = request('/sample/sample.txt', multi)
+  class TestMultipleExtensions < self
+    def setup
+      @multi = Rack::Zip.new(__dir__, extensions: %w[.ext .zip])
+    end
 
-    assert_equal 200, response.status
-    assert_equal "This is a plain text file in sample.ext.\n", response.body
+    def test_multiple_extensions_for_zip_file_can_be_specified
+      response = request('/sample/sample.txt', @multi)
+
+      assert_equal 200, response.status
+      assert_equal "This is a plain text file in sample.ext.\n", response.body
+    end
+
+    def test_use_former_extension_when_same_basename_specified
+      @multi = Rack::Zip.new(__dir__, extensions: %w[.ext .zip])
+      file_path, _ = @multi.find_zip_file_and_inner_path('/sample/sample.txt')
+
+      assert_equal @multi.root + 'sample.ext', file_path
+    end
   end
 
   class TestFindZipFileAndInnerPath < self
@@ -77,13 +89,6 @@ class TestZip < Test::Unit::TestCase
       path &&= @zip.root + path
 
       assert_equal [path, file_in_zip], @zip.find_zip_file_and_inner_path(path_info)
-    end
-
-    def test_use_former_extension_when_same_basename_specified
-      multi = Rack::Zip.new(__dir__, extensions: %w[.ext .zip])
-      file_path, _ = multi.find_zip_file_and_inner_path('/sample/sample.txt')
-
-      assert_equal multi.root + 'sample.ext', file_path
     end
   end
 end
