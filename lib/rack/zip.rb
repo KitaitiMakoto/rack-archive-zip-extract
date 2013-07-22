@@ -55,7 +55,7 @@ class Rack::Zip
     current = @root
     zip_file = nil
     while part = path_parts.shift
-      zip_file = find_existing_file_with_extension(current, part, [extension])
+      zip_file = find_existing_file_with_extension(current, part, extension)
       break if zip_file
       current += part
     end
@@ -94,7 +94,8 @@ class Rack::Zip
   # @param extensions [Array<String>] list of extension candidates, to be joined with +basename+
   # @return [Pathname] file path when file with extension exists
   # @return [nil] when file with extension doesn't exist
-  def find_existing_file_with_extension(directory_path, basename, extensions)
-    extensions.lazy.map {|ext| directory_path + "#{basename}#{ext}"}.find(&:file?)
+  def find_existing_file_with_extension(directory_path, basename, extension)
+    path = directory_path + "#{basename}#{extension}"
+    path.file? ? path : nil
   end
 end
