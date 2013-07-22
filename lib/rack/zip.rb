@@ -37,7 +37,7 @@ class Rack::Zip
     [
       200,
       {
-        'Content-Type' => Rack::Mime.mime_type(File.extname(path_info)),
+        'Content-Type' => Rack::Mime.mime_type(::File.extname(path_info)),
         'Content-Length' => body.bytesize.to_s
       },
       [body]
@@ -55,7 +55,7 @@ class Rack::Zip
       current += part
       break if zip_file
     end
-    return zip_file, File.join(path_parts)
+    return zip_file, ::File.join(path_parts)
   end
 
   # @param zip_file_path [Pathname] path to zip file
