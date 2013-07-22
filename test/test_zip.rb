@@ -25,13 +25,15 @@ class TestZip < Test::Unit::TestCase
     assert_equal "This is a plain text file.\n", response.body
   end
 
-  [
-   %w[.txt  text/plain      text_plain],
-   %w[.html text/html       text_html],
-   %w[.xml  application/xml application_xml]
-  ].each do |(ext, content_type, underscored)|
-    define_method "test_request_to_file_with_extension_#{ext}_returns_content_type_#{underscored}" do
-      response = request("/sample/sample#{ext}")
+  class TestContentType < self
+    data(
+      'text/plain'      => %w[.txt  text/plain],
+      'text/html'       => %w[.html text/html],
+      'application/xml' => %w[.xml  application/xml]
+    )
+    def test_content_type(data)
+      extension, content_type = data
+      response = request("/sample/sample#{extension}")
 
       assert_equal content_type, response['Content-Type']
     end
