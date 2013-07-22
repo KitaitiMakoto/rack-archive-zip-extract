@@ -10,8 +10,8 @@ end
 namespace :test do
   desc 'Build test fixtures'
   task :build do
-    sh 'zip -rj test/sample.zip test/fixtures/sample-zip'
-    sh 'zip -rj test/sample.ext test/fixtures/sample-ext'
+    sh 'cd test/fixtures/sample-zip && zip -r ../../sample.zip .'
+    sh 'cd test/fixtures/sample-ext && zip -r ../../sample.ext .'
   end
 end
 

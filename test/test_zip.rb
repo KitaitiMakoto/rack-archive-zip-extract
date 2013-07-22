@@ -23,7 +23,8 @@ class TestZip < Test::Unit::TestCase
     data(
       'file in zip'              => [200, '/sample/sample.txt'],
       'zip file itself'          => [404, '/sample.zip'],
-      'non-existent file in zip' => [404, '/sample/non-existent']
+      'non-existent file in zip' => [404, '/sample/non-existent'],
+      'file in subdirectory'     => [200, '/sample/subdir/sample.txt']
     )
 
     def test_status_code(data)
