@@ -63,24 +63,27 @@ class TestZip < Test::Unit::TestCase
     assert_equal "This is a plain text file in sample.ext.\n", response.body
   end
 
-  data(
-    'path to zip file'                             => ['/sample.zip',            [nil,          '']],
-    'path to non-existing file'                    => ['/non-existing',          [nil,          '']],
-    'path ending with slash'                       => ['/sample/',               ['sample.zip', '']],
-    'path including file name in zip archive'      => ['/sample/inner.txt',      ['sample.zip', 'inner.txt']],
-    'path including directory name in zip archive' => ['/sample/inner/file.txt', ['sample.zip', 'inner/file.txt']]
-  )
-  def test_find_zip_file_and_inner_path(data)
-    path_info, (path, file_in_zip) = data
-    path &&= (@zip.root + path)
+  class TestFindZipFileAndInnerPath < self
+    data(
+      'path to zip file'                             => ['/sample.zip',            [nil,          '']],
+      'path to non-existing file'                    => ['/non-existing',          [nil,          '']],
+      'path ending with slash'                       => ['/sample/',               ['sample.zip', '']],
+      'path including file name in zip archive'      => ['/sample/inner.txt',      ['sample.zip', 'inner.txt']],
+      'path including directory name in zip archive' => ['/sample/inner/file.txt', ['sample.zip', 'inner/file.txt']]
+    )
 
-    assert_equal [path, file_in_zip], @zip.find_zip_file_and_inner_path(path_info)
-  end
+    def test_find_zip_file_and_inner_path(data)
+      path_info, (path, file_in_zip) = data
+      path &&= (@zip.root + path)
 
-  def test_use_former_extension_when_same_basename_specified
-    multi = Rack::Zip.new(__dir__, extensions: %w[.ext .zip])
-    file_path, _ = multi.find_zip_file_and_inner_path('/sample/sample.txt')
+      assert_equal [path, file_in_zip], @zip.find_zip_file_and_inner_path(path_info)
+    end
 
-    assert_equal multi.root + 'sample.ext', file_path
+    def test_use_former_extension_when_same_basename_specified
+      multi = Rack::Zip.new(__dir__, extensions: %w[.ext .zip])
+      file_path, _ = multi.find_zip_file_and_inner_path('/sample/sample.txt')
+
+      assert_equal multi.root + 'sample.ext', file_path
+    end
   end
 end
