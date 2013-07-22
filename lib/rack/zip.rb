@@ -31,7 +31,11 @@ class Rack::Zip
     return [405, {'Allow' => ALLOWED_VERBS.join(', ')}, []] unless ALLOWED_VERBS.include? env['REQUEST_METHOD']
 
     path_info = Rack::Utils.unescape(env['PATH_INFO'])
-    body = extract_content(*find_zip_file_and_inner_path(path_info))
+    body = nil
+    @extensions.each do |ext|
+      body = extract_content(*find_zip_file_and_inner_path(path_info, ext))
+      break if body
+    end
     return [404, {}, []] if body.nil?
 
     [
@@ -46,12 +50,12 @@ class Rack::Zip
 
   # @param path_info [String]
   # @return [Array] a pair of Pathname(zip file) and String(file path in zip archive)
-  def find_zip_file_and_inner_path(path_info)
+  def find_zip_file_and_inner_path(path_info, extension)
     path_parts = path_info_to_clean_parts(path_info)
     current = @root
     zip_file = nil
     while part = path_parts.shift
-      zip_file = find_existing_file_with_extension(current, part, @extensions)
+      zip_file = find_existing_file_with_extension(current, part, [extension])
       break if zip_file
       current += part
     end
