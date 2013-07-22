@@ -60,7 +60,8 @@ class Rack::Zip
 
   # @param zip_file_path [Pathname] path to zip file
   # @param inner_path [String] path to file in zip archive
-  # @return [Array] a pair of content body and length
+  # @return [String] content
+  # @return [nil] if +inner_path+ doesn't exist
   def extract_content(zip_file_path, inner_path)
     return if zip_file_path.nil? or inner_path.empty?
     Zip::Archive.open zip_file_path.to_path do |archive|
