@@ -45,7 +45,7 @@ class Rack::Zip
       {
         'Content-Type' => Rack::Mime.mime_type(::File.extname(path_info)),
         'Content-Length' => body.bytesize.to_s,
-        'Last-Modified' => zip_file.mtime
+        'Last-Modified' => zip_file.mtime.httpdate
       },
       [body]
     ]
