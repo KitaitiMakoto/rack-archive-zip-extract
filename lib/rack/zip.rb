@@ -52,8 +52,8 @@ class Rack::Zip
     zip_file = nil
     while part = path_parts.shift
       zip_file = find_existing_file_with_extension(current, part, @extensions)
-      current += part
       break if zip_file
+      current += part
     end
     return zip_file, ::File.join(path_parts)
   end
