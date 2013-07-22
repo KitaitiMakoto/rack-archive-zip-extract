@@ -88,14 +88,4 @@ class Rack::Zip
     end
     clean
   end
-
-  # @param directory_path [Pathname] directory path to find file
-  # @param basename [String] file name without extension
-  # @param extensions [Array<String>] list of extension candidates, to be joined with +basename+
-  # @return [Pathname] file path when file with extension exists
-  # @return [nil] when file with extension doesn't exist
-  def find_existing_file_with_extension(directory_path, basename, extension)
-    path = directory_path + "#{basename}#{extension}"
-    path.file? ? path : nil
-  end
 end
