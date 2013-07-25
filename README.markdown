@@ -52,7 +52,7 @@ This application is not released as a RubyGem because I need to decide appropria
 
 Also, "Rack::Unzip", like Nginx's [nginx-unzip-module][], is not good. This application doesn't actually *unzip* files.
 
-Is "Rack::ExtractFromZip" good? It is correct but not cool.
+Is "Rack::FilesInZip" good? It is correct but not cool.
 
 If you have some idea about the name of this application, please tell me as an [issue][].
 
