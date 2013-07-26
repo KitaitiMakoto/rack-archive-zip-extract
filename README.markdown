@@ -58,3 +58,8 @@ If you have some idea about the name of this application, please tell me as an [
 
 [nginx-unzip-module]: https://github.com/youzee/nginx-unzip-module
 [issue]: https://github.com/KitaitiMakoto/rack-zip/issues
+
+License
+-------
+
+This program is distribuetd under the term of the MIT License. See MIT-LICENSE file for more info.
