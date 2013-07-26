@@ -17,7 +17,7 @@ See "Request for comments" section of this file for details.
 Usage
 -----
 
-Write below in you config.ru:
+Write below in your config.ru:
 
     require 'rack/zip'
     
