@@ -2,11 +2,11 @@ require 'test/unit'
 require 'test/unit/notify'
 require 'rack/lint'
 require 'rack/mock'
-require 'rack/zip'
+require 'rack/archive/zip/extract'
 
-class TestZip < Test::Unit::TestCase
+class TestRackArchiveZipExtract < Test::Unit::TestCase
   def setup
-    @zip = Rack::Zip.new(__dir__)
+    @zip = Rack::Archive::Zip::Extract.new(__dir__)
   end
 
   def request(path, app=@zip)
@@ -56,7 +56,7 @@ class TestZip < Test::Unit::TestCase
   end
 
   def test_extension_of_file_can_be_changed
-    ext = Rack::Zip.new(__dir__, extensions: %w[.ext])
+    ext = Rack::Archive::Zip::Extract.new(__dir__, extensions: %w[.ext])
     response = request('/sample/sample.txt', ext)
 
     assert_equal 200, response.status
@@ -66,7 +66,7 @@ class TestZip < Test::Unit::TestCase
   class TestMultipleExtensions < self
     def setup
       super
-      @multi = Rack::Zip.new(__dir__, extensions: %w[.ext .zip])
+      @multi = Rack::Archive::Zip::Extract.new(__dir__, extensions: %w[.ext .zip])
     end
 
     def test_multiple_extensions_for_zip_file_can_be_specified
