@@ -84,6 +84,7 @@ module Rack::Archive
 
       # @param path_info [String]
       # @return [Array<String>] segments of clean path
+      # @see http://rubydoc.info/gems/rack/Rack/File#_call-instance_method Algorithm stolen from Rack::File#_call
       def path_info_to_clean_segments(path_info)
         segments = path_info.split SEPS
         clean = []
