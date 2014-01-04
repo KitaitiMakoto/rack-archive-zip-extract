@@ -4,15 +4,15 @@ require 'rack/file'
 require 'rack/mime'
 require 'zipruby'
 
-# {Rack::Archive::Zip::Extract Rack::Archive::Zip::Extract} is a Rack application which serves files in zip archives.
-# @example
-#   run Rack::Archive::Zip::Extract.new('path/to/docroot')
-# @example
-#   run Rack::Archive::Zip::Extract.new('path/to/docroot', extensions: %w[.epub .zip .jar .odt .docx])
-# @note
-#   {Rack::Archive::Zip::Extract Rack::Archive::Zip::Extract} does not serve a zip file itself. Use Rack::File or so to do so.
 module Rack::Archive
   module Zip
+    # {Rack::Archive::Zip::Extract Rack::Archive::Zip::Extract} is a Rack application which serves files in zip archives.
+    # @example
+    #   run Rack::Archive::Zip::Extract.new('path/to/docroot')
+    # @example
+    #   run Rack::Archive::Zip::Extract.new('path/to/docroot', extensions: %w[.epub .zip .jar .odt .docx])
+    # @note
+    #   {Rack::Archive::Zip::Extract Rack::Archive::Zip::Extract} does not serve a zip file itself. Use Rack::File or so to do so.
     class Extract
       SEPS = Rack::File::SEPS
       ALLOWED_VERBS = Rack::File::ALLOWED_VERBS
