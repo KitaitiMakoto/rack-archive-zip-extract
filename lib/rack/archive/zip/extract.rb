@@ -15,7 +15,16 @@ module Rack::Archive
     #   {Rack::Archive::Zip::Extract Rack::Archive::Zip::Extract} does not serve a zip file itself. Use Rack::File or so to do so.
     class Extract
       SEPS = Rack::File::SEPS
+      DOT = '.'.freeze
+      DOUBLE_DOT = '..'.freeze
+      COMMA = ','.freeze
       ALLOWED_VERBS = Rack::File::ALLOWED_VERBS
+      ALLOW = 'Allow'.freeze
+      CONTENT_TYPE = 'Content-Type'.freeze
+      CONTENT_LENGTH = 'Content-Length'.freeze
+      LAST_MODIFIED = 'Last-Modified'.freeze
+      REQUEST_METHOD = 'REQUEST_METHOD'.freeze
+      PATH_INFO = 'PATH_INFO'.freeze
 
       attr_reader :root
 
@@ -30,9 +39,9 @@ module Rack::Archive
       end
 
       def call(env)
-        return [405, {'Allow' => ALLOWED_VERBS.join(', ')}, []] unless ALLOWED_VERBS.include? env['REQUEST_METHOD']
+        return [405, {ALLOW => ALLOWED_VERBS.join(COMMA)}, []] unless ALLOWED_VERBS.include? env[REQUEST_METHOD]
 
-        path_info = Rack::Utils.unescape(env['PATH_INFO'])
+        path_info = Rack::Utils.unescape(env[PATH_INFO])
         zip_file = nil
         body = nil
         @extensions.each do |ext|
@@ -45,9 +54,9 @@ module Rack::Archive
         [
           200,
           {
-            'Content-Type' => Rack::Mime.mime_type(::File.extname(path_info)),
-            'Content-Length' => body.bytesize.to_s,
-            'Last-Modified' => zip_file.mtime.httpdate
+            CONTENT_TYPE => Rack::Mime.mime_type(::File.extname(path_info)),
+            CONTENT_LENGTH => body.bytesize.to_s,
+            LAST_MODIFIED => zip_file.mtime.httpdate
           },
           [body]
         ]
@@ -89,8 +98,8 @@ module Rack::Archive
         segments = path_info.split SEPS
         clean = []
         segments.each do |segment|
-          next if segment.empty? || segment == '.'
-          segment == '..' ? clean.pop : clean << segment
+          next if segment.empty? || segment == DOT
+          segment == DOUBLE_DOT ? clean.pop : clean << segment
         end
         clean
       end
