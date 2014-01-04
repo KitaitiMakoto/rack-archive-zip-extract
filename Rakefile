@@ -1,5 +1,6 @@
 require 'rake/clean'
 require 'rake/testtask'
+require 'rubygems/tasks'
 
 task :default => :test
 
@@ -16,3 +17,6 @@ namespace :test do
 end
 
 task :test => [:clean, 'test:build']
+
+Gem::Tasks.new
+Gem::Tasks::Sign::Checksum.new
