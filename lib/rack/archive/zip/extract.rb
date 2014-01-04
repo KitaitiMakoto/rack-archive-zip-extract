@@ -57,13 +57,13 @@ module Rack::Archive
       # @param extension [String]
       # @return [Array] a pair of Pathname(zip file) and String(file path in zip archive)
       def find_zip_file_and_inner_path(path_info, extension)
-        path_parts = path_info_to_clean_parts(path_info)
+        segments = path_info_to_clean_segments(path_info)
         current = @root
         zip_file = nil
-        while part = path_parts.shift
-          zip_file = current + "#{part}#{extension}"
-          return zip_file, ::File.join(path_parts) if zip_file.file?
-          current += part
+        while segment = segments.shift
+          zip_file = current + "#{segment}#{extension}"
+          return zip_file, ::File.join(segments) if zip_file.file?
+          current += segment
         end
       end
 
@@ -83,13 +83,13 @@ module Rack::Archive
       end
 
       # @param path_info [String]
-      # @return [Array<String>] parts of clean path
-      def path_info_to_clean_parts(path_info)
-        parts = path_info.split SEPS
+      # @return [Array<String>] segments of clean path
+      def path_info_to_clean_segments(path_info)
+        segments = path_info.split SEPS
         clean = []
-        parts.each do |part|
-          next if part.empty? || part == '.'
-          part == '..' ? clean.pop : clean << part
+        segments.each do |segment|
+          next if segment.empty? || segment == '.'
+          segment == '..' ? clean.pop : clean << segment
         end
         clean
       end
