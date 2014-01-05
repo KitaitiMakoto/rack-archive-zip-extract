@@ -35,6 +35,14 @@ class TestRackArchiveZipExtract < Test::Unit::TestCase
     assert_equal 304, response.status
   end
 
+  def test_request_to_old_file_returns_no_content
+    mtime = File.mtime(File.join(__dir__, 'fixtures', 'sample-zip', 'sample.txt'))
+    if_modified_since = mtime + 12
+    response = request('/sample/sample.txt', @zip, {'HTTP_IF_MODIFIED_SINCE' => if_modified_since.httpdate})
+
+    assert_empty response.body
+  end
+
   class TestStatusCode < self
     data(
       'file in zip'              => [200, '/sample/sample.txt'],
