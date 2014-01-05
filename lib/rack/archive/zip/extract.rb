@@ -92,12 +92,12 @@ module Rack::Archive
       # @return [String] content
       # @return [nil] if +zip_file_path+ is nil or +inner_path+ is empty
       # @return [nil] if +inner_path+ doesn't exist in zip archive
-      def extract_content(zip_file_path, inner_path, if_modifed_since)
+      def extract_content(zip_file_path, inner_path, if_modified_since)
         return if zip_file_path.nil? or inner_path.empty?
         ::Zip::Archive.open zip_file_path.to_path do |archive|
           return if archive.locate_name(inner_path) < 0
           archive.fopen inner_path do |file|
-            if if_modifed_since and if_modifed_since >= file.mtime
+            if if_modified_since and if_modified_since >= file.mtime
               return nil, nil, file.mtime
             else
               return file.read, file.size, file.mtime
