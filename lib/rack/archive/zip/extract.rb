@@ -58,7 +58,7 @@ module Rack::Archive
         end
         return [status_code(:not_found), {}, []] if mtime.nil?
 
-        if if_modified_since and if_modified_since >= mtime
+        if if_modified_since and mtime <= if_modified_since
           [status_code(:not_modified), {}, []]
         else
           [
@@ -97,7 +97,7 @@ module Rack::Archive
         ::Zip::Archive.open zip_file_path.to_path do |archive|
           return if archive.locate_name(inner_path) < 0
           archive.fopen inner_path do |file|
-            if if_modified_since and if_modified_since >= file.mtime
+            if if_modified_since and file.mtime <= if_modified_since
               return nil, nil, file.mtime
             else
               return file.read, file.size, file.mtime
