@@ -24,6 +24,7 @@ module Rack::Archive
       ALLOW = 'Allow'.freeze
       CONTENT_TYPE = 'Content-Type'.freeze
       CONTENT_LENGTH = 'Content-Length'.freeze
+      IF_MODIFIED_SINCE = 'HTTP_IF_MODIFIED_SINCE'.freeze
       LAST_MODIFIED = 'Last-Modified'.freeze
       REQUEST_METHOD = 'REQUEST_METHOD'.freeze
       PATH_INFO = 'PATH_INFO'.freeze
@@ -55,15 +56,21 @@ module Rack::Archive
         end
         return [status_code(:not_found), {}, []] if body.nil?
 
-        [
-          status_code(:ok),
-          {
-            CONTENT_TYPE => Rack::Mime.mime_type(::File.extname(path_info)),
-            CONTENT_LENGTH => file_size.to_s,
-            LAST_MODIFIED => mtime.httpdate
-          },
-          [body]
-        ]
+        if_modified_since = env[IF_MODIFIED_SINCE]
+        if_modified_since = Time.parse(if_modified_since) if if_modified_since
+        if if_modified_since and if_modified_since >= mtime
+          [status_code(:not_modified), {}, []]
+        else
+          [
+            status_code(:ok),
+            {
+              CONTENT_TYPE => Rack::Mime.mime_type(::File.extname(path_info)),
+              CONTENT_LENGTH => file_size.to_s,
+              LAST_MODIFIED => mtime.httpdate
+            },
+            [body]
+          ]
+        end
       end
 
       # @param path_info [String]

@@ -9,8 +9,8 @@ class TestRackArchiveZipExtract < Test::Unit::TestCase
     @zip = Rack::Archive::Zip::Extract.new(__dir__)
   end
 
-  def request(path, app=@zip)
-    Rack::MockRequest.new(app).get(path)
+  def request(path, app=@zip, opts={})
+    Rack::MockRequest.new(app).get(path, opts)
   end
 
   def test_request_to_file_in_zip_returns_content
@@ -25,6 +25,14 @@ class TestRackArchiveZipExtract < Test::Unit::TestCase
     actual = Time.parse(response['Last-Modified'])
 
     assert_in_delta expected, actual, 2
+  end
+
+  def test_request_to_old_file_returns_not_modified
+    mtime = File.mtime(File.join(__dir__, 'fixtures', 'sample-zip', 'sample.txt'))
+    if_modified_since = mtime + 12
+    response = request('/sample/sample.txt', @zip, {'HTTP_IF_MODIFIED_SINCE' => if_modified_since.httpdate})
+
+    assert_equal 304, response.status
   end
 
   class TestStatusCode < self
