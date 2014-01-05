@@ -14,6 +14,8 @@ module Rack::Archive
     # @note
     #   {Rack::Archive::Zip::Extract Rack::Archive::Zip::Extract} does not serve a zip file itself. Use Rack::File or so to do so.
     class Extract
+      include Rack::Utils
+
       SEPS = Rack::File::SEPS
       DOT = '.'.freeze
       DOUBLE_DOT = '..'.freeze
@@ -39,9 +41,9 @@ module Rack::Archive
       end
 
       def call(env)
-        return [405, {ALLOW => ALLOWED_VERBS.join(COMMA)}, []] unless ALLOWED_VERBS.include? env[REQUEST_METHOD]
+        return [status_code(:method_not_allowd), {ALLOW => ALLOWED_VERBS.join(COMMA)}, []] unless ALLOWED_VERBS.include? env[REQUEST_METHOD]
 
-        path_info = Rack::Utils.unescape(env[PATH_INFO])
+        path_info = unescape(env[PATH_INFO])
         zip_file = nil
         body = nil
         file_size = nil
@@ -50,10 +52,10 @@ module Rack::Archive
           body, file_size = extract_content(zip_file, inner_path)
           break if body
         end
-        return [404, {}, []] if body.nil?
+        return [status_code(:not_found), {}, []] if body.nil?
 
         [
-          200,
+          status_code(:ok),
           {
             CONTENT_TYPE => Rack::Mime.mime_type(::File.extname(path_info)),
             CONTENT_LENGTH => file_size.to_s,
