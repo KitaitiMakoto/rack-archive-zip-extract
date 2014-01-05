@@ -47,9 +47,10 @@ module Rack::Archive
         zip_file = nil
         body = nil
         file_size = nil
+        mtime = nil
         @extensions.each do |ext|
           zip_file, inner_path = find_zip_file_and_inner_path(path_info, ext)
-          body, file_size = extract_content(zip_file, inner_path)
+          body, file_size, mtime = extract_content(zip_file, inner_path)
           break if body
         end
         return [status_code(:not_found), {}, []] if body.nil?
@@ -59,7 +60,7 @@ module Rack::Archive
           {
             CONTENT_TYPE => Rack::Mime.mime_type(::File.extname(path_info)),
             CONTENT_LENGTH => file_size.to_s,
-            LAST_MODIFIED => zip_file.mtime.httpdate
+            LAST_MODIFIED => mtime.httpdate
           },
           [body]
         ]
@@ -89,7 +90,7 @@ module Rack::Archive
         ::Zip::Archive.open zip_file_path.to_path do |archive|
           return if archive.locate_name(inner_path) < 0
           archive.fopen inner_path do |file|
-            return file.read, file.size
+            return file.read, file.size, file.mtime
           end
         end
       end

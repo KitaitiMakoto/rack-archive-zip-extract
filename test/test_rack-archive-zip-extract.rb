@@ -21,9 +21,10 @@ class TestRackArchiveZipExtract < Test::Unit::TestCase
 
   def test_request_to_file_in_zip_returns_last_modified
     response = request('/sample/sample.txt')
-    expected = File.mtime(File.join(__dir__, 'sample.zip')).httpdate
+    expected = File.mtime(File.join(__dir__, 'fixtures', 'sample-zip', 'sample.txt'))
+    actual = Time.parse(response['Last-Modified'])
 
-    assert_equal expected, response['Last-Modified']
+    assert_in_delta expected, actual, 2
   end
 
   class TestStatusCode < self
