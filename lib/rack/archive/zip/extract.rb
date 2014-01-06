@@ -47,7 +47,6 @@ module Rack::Archive
         path_info = unescape(env[PATH_INFO])
         if_modified_since = env[IF_MODIFIED_SINCE]
         if_modified_since = Time.parse(if_modified_since) if if_modified_since
-        zip_file = nil
         body = nil
         file_size = nil
         mtime = nil
