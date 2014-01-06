@@ -45,29 +45,27 @@ module Rack::Archive
         return [status_code(:method_not_allowd), {ALLOW => ALLOWED_VERBS.join(COMMA)}, []] unless ALLOWED_VERBS.include? env[REQUEST_METHOD]
 
         path_info = unescape(env[PATH_INFO])
-        if_modified_since = env[IF_MODIFIED_SINCE]
-        if_modified_since = Time.parse(if_modified_since) if if_modified_since
-        body = nil
-        file_size = nil
-        mtime = nil
+        file = nil
         @extensions.each do |ext|
           zip_file, inner_path = find_zip_file_and_inner_path(path_info, ext)
-          body, file_size, mtime = extract_content(zip_file, inner_path, if_modified_since)
-          break if mtime
+          file = extract_content(zip_file, inner_path)
+          break if file
         end
-        return [status_code(:not_found), {}, []] if mtime.nil?
+        return [status_code(:not_found), {}, []] if file.nil?
 
-        if if_modified_since and mtime <= if_modified_since
+        if_modified_since = env[IF_MODIFIED_SINCE]
+        if_modified_since = Time.parse(if_modified_since) if if_modified_since
+        if if_modified_since and file.mtime <= if_modified_since
           [status_code(:not_modified), {}, []]
         else
           [
             status_code(:ok),
             {
               CONTENT_TYPE => Rack::Mime.mime_type(::File.extname(path_info)),
-              CONTENT_LENGTH => file_size.to_s,
-              LAST_MODIFIED => mtime.httpdate
+              CONTENT_LENGTH => file.size.to_s,
+              LAST_MODIFIED => file.mtime.httpdate
             },
-            [body]
+            file
           ]
         end
       end
@@ -88,20 +86,17 @@ module Rack::Archive
 
       # @param zip_file_path [Pathname] path to zip file
       # @param inner_path [String] path to file in zip archive
-      # @return [String] content
+      # @return [Zip::File]
       # @return [nil] if +zip_file_path+ is nil or +inner_path+ is empty
       # @return [nil] if +inner_path+ doesn't exist in zip archive
-      def extract_content(zip_file_path, inner_path, if_modified_since)
+      def extract_content(zip_file_path, inner_path)
         return if zip_file_path.nil? or inner_path.empty?
-        ::Zip::Archive.open zip_file_path.to_path do |archive|
-          return if archive.locate_name(inner_path) < 0
-          archive.fopen inner_path do |file|
-            if if_modified_since and file.mtime <= if_modified_since
-              return nil, nil, file.mtime
-            else
-              return file.read, file.size, file.mtime
-            end
-          end
+        archive = ::Zip::Archive.open(zip_file_path.to_path)
+        if archive.locate_name(inner_path) < 0
+          archive.close
+          nil
+        else
+          ExtractedFile.new(archive, archive.fopen(inner_path))
         end
       end
 
@@ -116,6 +111,33 @@ module Rack::Archive
           segment == DOUBLE_DOT ? clean.pop : clean << segment
         end
         clean
+      end
+
+      class ExtractedFile
+        # @param archive [Zip::Archive]
+        # @param file [Zip::File]
+        def initialize(archive, file)
+          @archive, @file = archive, file
+        end
+
+        def each
+          @file.read do |chunk|
+            yield chunk
+          end
+        end
+
+        def mtime
+          @file.mtime
+        end
+
+        def size
+          @file.size
+        end
+
+        def close
+          @file.close
+          @archive.close
+        end
       end
     end
   end
