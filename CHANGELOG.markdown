@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+0.0.3
+-----
+
+* Chunk content body and use buffer rather than read body at a time
+
 0.0.2
 -----
 
