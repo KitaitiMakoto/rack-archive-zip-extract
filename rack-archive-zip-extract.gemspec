@@ -6,7 +6,23 @@ Gem::Specification.new do |spec|
   spec.authors = ['KITAITI Makoto']
   spec.email = 'KitaitiMakoto@gmail.com'
   spec.required_ruby_version = '>= 2.0.0'
-  spec.files = ['lib/rack/archive/zip/extract.rb']
+  spec.files = %w[
+    lib/rack/archive/zip/extract.rb
+    Rakefile
+  ]
+  spec.extra_rdoc_files = %w[
+    README.markdown
+    MIT-LICENSE
+    CHANGELOG.markdown
+  ]
+  spec.test_files = %w[
+    test/test_rack-archive-zip-extract.rb
+    test/fixtures/sample-ext/sample.txt
+    test/fixtures/sample-zip/sample.html
+    test/fixtures/sample-zip/sample.txt
+    test/fixtures/sample-zip/sample.xml
+    test/fixtures/sample-zip/subdir/sample.txt
+  ]
   spec.homepage = 'https://github.com/KitaitiMakoto/rack-archive-zip-extract'
   spec.license = 'MIT'
 
