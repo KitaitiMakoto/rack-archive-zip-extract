@@ -37,7 +37,7 @@ module Rack::Archive
       def initialize(root, extensions: %w[.zip])
         @root = root.kind_of?(Pathname) ? root : Pathname(root)
         @root = @root.expand_path
-        @extensions = extensions
+        @extensions = extensions.each {|extention| extention.freeze}
         raise ArgumentError, "Not a directory: #{@root}" unless @root.directory?
       end
 
