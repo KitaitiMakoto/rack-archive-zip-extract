@@ -48,7 +48,7 @@ module Rack::Archive
         file = nil
         @extensions.each do |ext|
           zip_file, inner_path = find_zip_file_and_inner_path(path_info, ext)
-          file = extract_content(zip_file, inner_path)
+          file = extract_file(zip_file, inner_path)
           break if file
         end
         return [status_code(:not_found), {}, []] if file.nil?
@@ -89,7 +89,7 @@ module Rack::Archive
       # @return [Zip::File]
       # @return [nil] if +zip_file_path+ is nil or +inner_path+ is empty
       # @return [nil] if +inner_path+ doesn't exist in zip archive
-      def extract_content(zip_file_path, inner_path)
+      def extract_file(zip_file_path, inner_path)
         return if zip_file_path.nil? or inner_path.empty?
         archive = ::Zip::Archive.open(zip_file_path.to_path)
         if archive.locate_name(inner_path) < 0
