@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+0.0.4
+-----
+
+* Change method name `extract_content` -> `extract_file`
+
 0.0.3
 -----
 
