@@ -37,7 +37,7 @@ module Rack::Archive
       def initialize(root, extensions: %w[.zip])
         @root = root.kind_of?(Pathname) ? root : Pathname(root)
         @root = @root.expand_path
-        @extensions = extensions.each {|extention| extention.freeze}
+        @extensions = extensions.each {|extention| extention.freeze}.lazy
         raise ArgumentError, "Not a directory: #{@root}" unless @root.directory?
       end
 
@@ -45,12 +45,10 @@ module Rack::Archive
         return [status_code(:method_not_allowd), {ALLOW => ALLOWED_VERBS.join(COMMA)}, []] unless ALLOWED_VERBS.include? env[REQUEST_METHOD]
 
         path_info = unescape(env[PATH_INFO])
-        file = nil
-        @extensions.each do |ext|
+        file = @extensions.map {|ext|
           zip_file, inner_path = find_zip_file_and_inner_path(path_info, ext)
-          file = extract_file(zip_file, inner_path)
-          break if file
-        end
+          extract_file(zip_file, inner_path)
+        }.select {|file| file}.first
         return [status_code(:not_found), {}, []] if file.nil?
 
         if_modified_since = env[IF_MODIFIED_SINCE]
