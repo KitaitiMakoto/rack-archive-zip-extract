@@ -99,4 +99,14 @@ class TestRackArchiveZipExtract < Test::Unit::TestCase
       assert_equal 200, response.status
     end
   end
+
+  class TestExtractedFile < self
+    def setup
+      @file = Rack::Archive::Zip::Extract::ExtractedFile.new(Zip::Archive.open('test/sample.zip'), 'sample.txt')
+    end
+
+    def test_not_respond_to_to_path
+      assert_false @file.respond_to? :to_path
+    end
+  end
 end
