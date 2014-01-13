@@ -43,10 +43,6 @@ class TestRackArchiveZipExtract < Test::Unit::TestCase
     assert_empty response.body
   end
 
-  def test_not_respond_to_to_path
-    assert_false @zip.respond_to? :to_path
-  end
-
   class TestStatusCode < self
     data(
       'file in zip'              => [200, '/sample/sample.txt'],
