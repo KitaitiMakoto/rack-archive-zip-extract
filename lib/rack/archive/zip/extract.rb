@@ -19,8 +19,7 @@ module Rack::Archive
       SEPS = Rack::File::SEPS
       DOT = '.'.freeze
       DOUBLE_DOT = '..'.freeze
-      COMMA = ','.freeze
-      ALLOWED_VERBS = Rack::File::ALLOWED_VERBS
+      ALLOWED_METHODS = Rack::File::ALLOWED_VERBS.join(', ').freeze
       ALLOW = 'Allow'.freeze
       CONTENT_TYPE = 'Content-Type'.freeze
       CONTENT_LENGTH = 'Content-Length'.freeze
@@ -42,7 +41,7 @@ module Rack::Archive
       end
 
       def call(env)
-        return [status_code(:method_not_allowd), {ALLOW => ALLOWED_VERBS.join(COMMA)}, []] unless ALLOWED_VERBS.include? env[REQUEST_METHOD]
+        return [status_code(:method_not_allowd), {ALLOW => ALLOWED_METHODS}, []] unless Rack::File::ALLOWED_VERBS.include? env[REQUEST_METHOD]
 
         path_info = unescape(env[PATH_INFO])
         file = @extensions.map {|ext|
