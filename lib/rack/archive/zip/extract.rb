@@ -28,8 +28,6 @@ module Rack::Archive
       REQUEST_METHOD = 'REQUEST_METHOD'.freeze
       PATH_INFO = 'PATH_INFO'.freeze
 
-      attr_reader :root
-
       # @param root [Pathname, #to_path, String] path to document root
       # @param extensions [Array<String>] extensions which is recognized as a zip file
       # @raise [ArgumentError] if +root+ is not a directory
