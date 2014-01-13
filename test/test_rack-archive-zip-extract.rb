@@ -102,11 +102,20 @@ class TestRackArchiveZipExtract < Test::Unit::TestCase
 
   class TestExtractedFile < self
     def setup
-      @file = Rack::Archive::Zip::Extract::ExtractedFile.new(Zip::Archive.open('test/sample.zip'), 'sample.txt')
+      @zip_path = 'test/sample.zip'
+      @inner_path = 'sample.txt'
+      @file = Rack::Archive::Zip::Extract::ExtractedFile.new(Zip::Archive.open(@zip_path), @inner_path)
     end
 
     def test_not_respond_to_to_path
       assert_false @file.respond_to? :to_path
+    end
+
+    def test_cannot_initialize_with_closed_archive
+      archive = Zip::Archive.open(@zip_path)
+      archive.close
+      assert_raise ArgumentError do Rack::Archive::Zip::Extract::ExtractedFile.new archive, @inner_path
+      end
     end
   end
 end

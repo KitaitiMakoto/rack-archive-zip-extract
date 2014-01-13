@@ -114,6 +114,7 @@ module Rack::Archive
         # @param archive [Zip::Archive]
         # @param path [String]
         def initialize(archive, path)
+          raise ArgumentError, 'archive already closed' unless archive.open?
           @archive = archive
           @file = @archive.fopen(path)
         end
