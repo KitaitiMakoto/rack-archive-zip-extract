@@ -93,7 +93,7 @@ module Rack::Archive
           archive.close
           nil
         else
-          ExtractedFile.new(archive, archive.fopen(inner_path))
+          ExtractedFile.new(archive, inner_path)
         end
       end
 
@@ -112,9 +112,10 @@ module Rack::Archive
 
       class ExtractedFile
         # @param archive [Zip::Archive]
-        # @param file [Zip::File]
-        def initialize(archive, file)
-          @archive, @file = archive, file
+        # @param path [String]
+        def initialize(archive, path)
+          @archive = archive
+          @file = @archive.fopen(path)
         end
 
         def each
