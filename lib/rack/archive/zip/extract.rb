@@ -113,6 +113,7 @@ module Rack::Archive
       class ExtractedFile
         # @param archive [Zip::Archive]
         # @param path [String]
+        # @raise ArgumentError when +archive+ already closed
         def initialize(archive, path)
           raise ArgumentError, 'archive already closed' unless archive.open?
           @archive = archive
