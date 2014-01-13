@@ -107,6 +107,9 @@ class TestRackArchiveZipExtract < Test::Unit::TestCase
       @file = Rack::Archive::Zip::Extract::ExtractedFile.new(Zip::Archive.open(@zip_path), @inner_path)
     end
 
+    # If body of Rack application responds to method `to_path`,
+    # it is used to specify file path on file system when
+    # Rack::Senfile or so is stacked on Rack builder.
     def test_not_respond_to_to_path
       assert_false @file.respond_to? :to_path
     end
