@@ -60,9 +60,11 @@ class TestRackArchiveZipExtract < Test::Unit::TestCase
 
   class TestContentType < self
     data(
-      'text/plain'      => %w[.txt  text/plain],
-      'text/html'       => %w[.html text/html],
-      'application/xml' => %w[.xml  application/xml]
+      'text/plain'        => %w[.txt  text/plain],
+      'text/html'         => %w[.html text/html],
+      'application/xml'   => %w[.xml  application/xml],
+      'unknown extension' => %w[.unknownextension application/octet-stream],
+      'no extension'      =>   ['', 'application/octet-stream'],
     )
     def test_content_type(data)
       extension, content_type = data
