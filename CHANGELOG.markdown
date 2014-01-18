@@ -5,6 +5,7 @@ CHANGELOG
 -----
 
 * Change method name `extract_content` -> `extract_file`
+* [BUG FIX]Close body when content not modified
 
 0.0.3
 -----
