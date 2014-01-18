@@ -51,6 +51,7 @@ module Rack::Archive
         if_modified_since = env[IF_MODIFIED_SINCE]
         if_modified_since = Time.parse(if_modified_since) if if_modified_since
         if if_modified_since and file.mtime <= if_modified_since
+          file.close
           [status_code(:not_modified), {}, []]
         else
           [
