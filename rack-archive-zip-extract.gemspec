@@ -23,7 +23,7 @@ Gem::Specification.new do |spec|
     test/fixtures/sample-zip/sample.xml
     test/fixtures/sample-zip/subdir/sample.txt
   ]
-  spec.homepage = 'https://github.com/KitaitiMakoto/rack-archive-zip-extract'
+  spec.homepage = 'http://rubydoc.info/gems/rack-archive-zip-extract/'
   spec.license = 'MIT'
 
   spec.add_runtime_dependency 'rack', '~> 1'
