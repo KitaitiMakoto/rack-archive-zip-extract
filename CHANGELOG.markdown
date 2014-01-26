@@ -6,6 +6,7 @@ CHANGELOG
 
 * Change method name `extract_content` -> `extract_file`
 * [BUG FIX]Close body when content not modified
+* Make buffer size for reading file in zip archive configuable
 
 0.0.3
 -----

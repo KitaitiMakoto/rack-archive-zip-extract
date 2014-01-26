@@ -31,10 +31,11 @@ module Rack::Archive
       # @param root [Pathname, #to_path, String] path to document root
       # @param extensions [Array<String>] extensions which is recognized as a zip file
       # @raise [ArgumentError] if +root+ is not a directory
-      def initialize(root, extensions: %w[.zip])
+      def initialize(root, extensions: %w[.zip], buffer_size: ExtractedFile::BUFFER_SIZE)
         @root = root.kind_of?(Pathname) ? root : Pathname(root)
         @root = @root.expand_path
         @extensions = extensions.each {|extention| extention.freeze}.lazy
+        @buffer_size = buffer_size
         raise ArgumentError, "Not a directory: #{@root}" unless @root.directory?
       end
 
@@ -92,7 +93,7 @@ module Rack::Archive
           archive.close
           nil
         else
-          ExtractedFile.new(archive, inner_path)
+          ExtractedFile.new(archive, inner_path, @buffer_size)
         end
       end
 
@@ -110,17 +111,20 @@ module Rack::Archive
       end
 
       class ExtractedFile
+        BUFFER_SIZE = 8192
+
         # @param archive [Zip::Archive]
         # @param path [String]
         # @raise ArgumentError when +archive+ already closed
-        def initialize(archive, path)
+        def initialize(archive, path, buffer_size=BUFFER_SIZE)
           raise ArgumentError, 'archive already closed' unless archive.open?
           @archive = archive
           @file = @archive.fopen(path)
+          @buffer_size = buffer_size
         end
 
         def each
-          @file.read do |chunk|
+          while chunk = @file.read(@buffer_size)
             yield chunk
           end
         end

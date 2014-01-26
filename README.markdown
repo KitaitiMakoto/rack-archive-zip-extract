@@ -45,6 +45,14 @@ You can tell the app extensions by option argument:
 
     run Rack::Archive::Zip::Extract.new('path/to/docroot', extensions: ['.epub', '.zip'])
 
+### Buffer size
+
+Buffer size for reading file in zip archive is set to {Rack::Archive::Zip::Extract::ExtractedFile::BUFFER_SIZE 8192} bytes by default.
+
+You can change it by passing `buffer_size` named argument when initailizig the app:
+
+    run Rack::Archive::Zip::Extract.new('path/to/docroot', buffer_size: 1024 * 1024)
+
 Note that Rack::Archive::Zip::Extract doesn't serve ZIP file itself.
 
 License
