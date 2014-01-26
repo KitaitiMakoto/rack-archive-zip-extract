@@ -38,6 +38,8 @@ Then, run server:
 
 Now you can see files in zip archives. For example, visit http://localhost:9292/some/inner-file.txt and then you can see the text in "inner-file.txt" file in "some.zip" archive file.
 
+*Note that Rack::Archive::Zip::Extract doesn't serve ZIP file itself.*
+
 ### File extensions
 
 By default, files with extension ".zip" is recognized as ZIP files.
@@ -52,8 +54,6 @@ Buffer size for reading file in zip archive is set to {Rack::Archive::Zip::Extra
 You can change it by passing `buffer_size` named argument when initailizig the app:
 
     run Rack::Archive::Zip::Extract.new('path/to/docroot', buffer_size: 1024 * 1024)
-
-Note that Rack::Archive::Zip::Extract doesn't serve ZIP file itself.
 
 License
 -------
