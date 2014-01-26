@@ -38,6 +38,8 @@ Then, run server:
 
 Now you can see files in zip archives. For example, visit http://localhost:9292/some/inner-file.txt and then you can see the text in "inner-file.txt" file in "some.zip" archive file.
 
+### File extensions
+
 By default, files with extension ".zip" is recognized as ZIP files.
 You can tell the app extensions by option argument:
 
