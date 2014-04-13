@@ -35,7 +35,7 @@ module Rack::Archive
       def initialize(root, extensions: %w[.zip], buffer_size: ExtractedFile::BUFFER_SIZE)
         @root = root.kind_of?(Pathname) ? root : Pathname(root)
         @root = @root.expand_path
-        @extensions = extensions.each {|extention| extention.freeze}.lazy
+        @extensions = extensions.map {|extention| extention.dup.freeze}.lazy
         @buffer_size = buffer_size
         raise ArgumentError, "Not a directory: #{@root}" unless @root.directory?
       end
