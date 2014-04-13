@@ -30,6 +30,7 @@ module Rack::Archive
 
       # @param root [Pathname, #to_path, String] path to document root
       # @param extensions [Array<String>] extensions which is recognized as a zip file
+      # @param buffer_size [Integer] buffer size to read content, in bytes
       # @raise [ArgumentError] if +root+ is not a directory
       def initialize(root, extensions: %w[.zip], buffer_size: ExtractedFile::BUFFER_SIZE)
         @root = root.kind_of?(Pathname) ? root : Pathname(root)
@@ -115,6 +116,7 @@ module Rack::Archive
 
         # @param archive [Zip::Archive]
         # @param path [String]
+        # @param buffer_size [Integer]
         # @raise ArgumentError when +archive+ already closed
         def initialize(archive, path, buffer_size=BUFFER_SIZE)
           raise ArgumentError, 'archive already closed' unless archive.open?
