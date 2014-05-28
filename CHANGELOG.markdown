@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+0.0.5
+-----
+
+* [BUG FIX]Duplicate extensions before freezing
+* Send ETag header
+
 0.0.4
 -----
 
