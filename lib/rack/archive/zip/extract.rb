@@ -86,7 +86,7 @@ module Rack::Archive
 
       # @param zip_file_path [Pathname] path to zip file
       # @param inner_path [String] path to file in zip archive
-      # @return [Zip::File]
+      # @return [ExtractedFile]
       # @return [nil] if +zip_file_path+ is nil or +inner_path+ is empty
       # @return [nil] if +inner_path+ doesn't exist in zip archive
       def extract_file(zip_file_path, inner_path)
