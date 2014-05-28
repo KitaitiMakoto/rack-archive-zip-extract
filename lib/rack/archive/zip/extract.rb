@@ -15,18 +15,20 @@ module Rack::Archive
     #   {Rack::Archive::Zip::Extract Rack::Archive::Zip::Extract} does not serve a zip file itself. Use Rack::File or so to do so.
     class Extract
       include Rack::Utils
+      extend Rack::Utils
 
       SEPS = Rack::File::SEPS
       DOT = '.'.freeze
       DOUBLE_DOT = '..'.freeze
-      ALLOWED_METHODS = Rack::File::ALLOWED_VERBS.join(', ').freeze
-      ALLOW = 'Allow'.freeze
       CONTENT_TYPE = 'Content-Type'.freeze
       CONTENT_LENGTH = 'Content-Length'.freeze
       IF_MODIFIED_SINCE = 'HTTP_IF_MODIFIED_SINCE'.freeze
       LAST_MODIFIED = 'Last-Modified'.freeze
       REQUEST_METHOD = 'REQUEST_METHOD'.freeze
       PATH_INFO = 'PATH_INFO'.freeze
+      METHOD_NOT_ALLOWED = [status_code(:method_not_allowd), {'Allow'.freeze => Rack::File::ALLOWED_VERBS.join(', ').freeze}, []]
+      NOT_FOUND = [status_code(:not_found), {}, []]
+      NOT_MODIFIED = [status_code(:not_modified), {}, []]
 
       # @param root [Pathname, #to_path, String] path to document root
       # @param extensions [Array<String>] extensions which is recognized as a zip file
@@ -41,20 +43,20 @@ module Rack::Archive
       end
 
       def call(env)
-        return [status_code(:method_not_allowd), {ALLOW => ALLOWED_METHODS}, []] unless Rack::File::ALLOWED_VERBS.include? env[REQUEST_METHOD]
+        return METHOD_NOT_ALLOWED unless Rack::File::ALLOWED_VERBS.include? env[REQUEST_METHOD]
 
         path_info = unescape(env[PATH_INFO])
         file = @extensions.map {|ext|
           zip_file, inner_path = find_zip_file_and_inner_path(path_info, ext)
           extract_file(zip_file, inner_path)
         }.select {|file| file}.first
-        return [status_code(:not_found), {}, []] if file.nil?
+        return NOT_FOUND if file.nil?
 
         if_modified_since = env[IF_MODIFIED_SINCE]
         if_modified_since = Time.parse(if_modified_since) if if_modified_since
         if if_modified_since and file.mtime <= if_modified_since
           file.close
-          [status_code(:not_modified), {}, []]
+          NOT_MODIFIED
         else
           [
             status_code(:ok),
