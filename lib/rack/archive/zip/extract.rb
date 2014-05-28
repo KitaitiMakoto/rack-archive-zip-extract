@@ -24,6 +24,8 @@ module Rack::Archive
       CONTENT_LENGTH = 'Content-Length'.freeze
       IF_MODIFIED_SINCE = 'HTTP_IF_MODIFIED_SINCE'.freeze
       LAST_MODIFIED = 'Last-Modified'.freeze
+      IF_NONE_MATCH = 'HTTP_IF_NONE_MATCH'.freeze
+      ETAG = 'ETag'.freeze
       REQUEST_METHOD = 'REQUEST_METHOD'.freeze
       PATH_INFO = 'PATH_INFO'.freeze
       METHOD_NOT_ALLOWED = [status_code(:method_not_allowd), {'Allow'.freeze => Rack::File::ALLOWED_VERBS.join(', ').freeze}, []]
@@ -54,7 +56,12 @@ module Rack::Archive
 
         if_modified_since = env[IF_MODIFIED_SINCE]
         if_modified_since = Time.parse(if_modified_since) if if_modified_since
-        if if_modified_since and file.mtime <= if_modified_since
+
+        if_none_match = env[IF_NONE_MATCH]
+        etag = file.name.hash.to_s(16) + file.mtime.hash.to_s(16)
+
+        if if_modified_since && file.mtime <= if_modified_since or
+            if_none_match && if_none_match == etag
           file.close
           NOT_MODIFIED
         else
@@ -63,7 +70,8 @@ module Rack::Archive
             {
               CONTENT_TYPE => Rack::Mime.mime_type(::File.extname(path_info)),
               CONTENT_LENGTH => file.size.to_s,
-              LAST_MODIFIED => file.mtime.httpdate
+              LAST_MODIFIED => file.mtime.httpdate,
+              ETAG => etag
             },
             file
           ]
@@ -131,6 +139,10 @@ module Rack::Archive
           while chunk = @file.read(@buffer_size)
             yield chunk
           end
+        end
+
+        def name
+          @file.name
         end
 
         def mtime

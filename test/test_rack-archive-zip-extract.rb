@@ -43,6 +43,29 @@ class TestRackArchiveZipExtract < Test::Unit::TestCase
     assert_empty response.body
   end
 
+  def test_request_to_file_in_zip_returns_etag
+    response = request('/sample/sample.txt')
+
+    assert_not_nil response['ETag']
+  end
+
+  def test_request_to_old_file_with_etag_returns_not_modified
+    path = '/sample/sample.txt'
+    etag = request(path)['ETag']
+
+    response = request(path, @zip, {'HTTP_IF_NONE_MATCH' => etag})
+
+    assert_equal 304, response.status
+  end
+
+  def test_request_to_old_file_with_etag_returns_no_content
+    path = '/sample/sample.txt'
+    etag = request(path)['ETag']
+    response = request(path, @zip, {'HTTP_IF_NONE_MATCH' => etag})
+
+    assert_empty response.body
+  end
+
   class TestStatusCode < self
     data(
       'file in zip'              => [200, '/sample/sample.txt'],
