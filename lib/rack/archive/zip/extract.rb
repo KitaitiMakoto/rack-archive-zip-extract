@@ -31,15 +31,18 @@ module Rack::Archive
       METHOD_NOT_ALLOWED = [status_code(:method_not_allowd), {'Allow'.freeze => Rack::File::ALLOWED_VERBS.join(', ').freeze}, []]
       NOT_FOUND = [status_code(:not_found), {}, []]
       NOT_MODIFIED = [status_code(:not_modified), {}, []]
+      DEFAULT_CONTENT_TYPE = 'application/octet-stream'.freeze
 
       # @param root [Pathname, #to_path, String] path to document root
       # @param extensions [Array<String>] extensions which is recognized as a zip file
+      # @param mime_types [Hash{String => String}] pairs of extesion and content type
       # @param buffer_size [Integer] buffer size to read content, in bytes
       # @raise [ArgumentError] if +root+ is not a directory
-      def initialize(root, extensions: %w[.zip], buffer_size: ExtractedFile::BUFFER_SIZE)
+      def initialize(root, extensions: %w[.zip], mime_types: {}, buffer_size: ExtractedFile::BUFFER_SIZE)
         @root = root.kind_of?(Pathname) ? root : Pathname(root)
         @root = @root.expand_path
         @extensions = extensions.map {|extention| extention.dup.freeze}.lazy
+        @mime_types = Rack::Mime::MIME_TYPES.merge(mime_types)
         @buffer_size = buffer_size
         raise ArgumentError, "Not a directory: #{@root}" unless @root.directory?
       end
@@ -68,7 +71,7 @@ module Rack::Archive
           [
             status_code(:ok),
             {
-              CONTENT_TYPE => Rack::Mime.mime_type(::File.extname(path_info)),
+              CONTENT_TYPE => @mime_types.fetch(::File.extname(path_info), DEFAULT_CONTENT_TYPE),
               CONTENT_LENGTH => file.size.to_s,
               LAST_MODIFIED => file.mtime.httpdate,
               ETAG => etag

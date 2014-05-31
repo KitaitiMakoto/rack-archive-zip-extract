@@ -123,6 +123,13 @@ class TestRackArchiveZipExtract < Test::Unit::TestCase
 
       assert_equal 200, response.status
     end
+
+    def test_mime_types_can_be_added
+      mime_types = Rack::Archive::Zip::Extract.new(__dir__, mime_types: {'.html' => 'application/xhtml+xml'})
+      response = request('/sample/sample.html', mime_types)
+
+      assert_equal 'application/xhtml+xml', response['Content-Type']
+    end
   end
 
   class TestExtractedFile < self

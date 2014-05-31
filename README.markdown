@@ -47,6 +47,16 @@ You can tell the app extensions by option argument:
 
     run Rack::Archive::Zip::Extract.new('path/to/docroot', extensions: ['.epub', '.zip'])
 
+### Mime types
+
+By default, Rack::Archive::Zip::Extract uses [`Rack::Mime::MIME_TYPES`][mime_types] as a mime type table. You can add and/or update mime type settings by passing hash table to initializer:
+
+    run Rack::Archive::Zip::Extract.new('path/to/docroot', mime_types: {'.html' => 'application/xhtml+xml', '.apk => 'application/vnd.android.package-archive'})
+
+In example above, Rack::Archive::Zip::Example sends "`Content-Type: application/xhtml+xml`" header for access to path with extension "`.html`" instead of "`text/html`" and "`application/vnd.android.package-archive`" for "`*.apk`" instead of default "`application/octet-stream`".
+
+[mime_types]: http://rack.rubyforge.org/doc/Rack/Mime.html#MIME_TYPES
+
 ### Buffer size
 
 Buffer size for reading file in zip archive is set to {Rack::Archive::Zip::Extract::ExtractedFile::BUFFER_SIZE 8192} bytes by default.

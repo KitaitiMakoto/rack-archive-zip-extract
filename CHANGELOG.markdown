@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+0.0.6
+-----
+
+* Make Content-Type header customizable
+
 0.0.5
 -----
 
