@@ -59,10 +59,9 @@ module Rack::Archive
 
         if_modified_since = Time.parse(env[IF_MODIFIED_SINCE]) rescue nil
         if_none_match = env[IF_NONE_MATCH]
-        etag = file.name.hash.to_s(16) + file.mtime.hash.to_s(16)
 
         if if_modified_since && file.mtime <= if_modified_since or
-            if_none_match && if_none_match == etag
+            if_none_match && if_none_match == file.etag
           file.close
           NOT_MODIFIED
         else
@@ -72,7 +71,7 @@ module Rack::Archive
               CONTENT_TYPE => @mime_types.fetch(::File.extname(path_info), DEFAULT_CONTENT_TYPE),
               CONTENT_LENGTH => file.size.to_s,
               LAST_MODIFIED => file.mtime.httpdate,
-              ETAG => etag
+              ETAG => file.etag
             },
             file
           ]
@@ -125,7 +124,7 @@ module Rack::Archive
       class ExtractedFile
         BUFFER_SIZE = 8192
 
-        attr_reader :name, :mtime, :size
+        attr_reader :etag, :mtime, :size
 
         # @param archive [Zip::Archive]
         # @param path [String]
@@ -135,9 +134,9 @@ module Rack::Archive
           raise ArgumentError, 'archive already closed' unless archive.open?
           @archive = archive
           @file = @archive.fopen(path)
-          @name = @file.name
           @mtime = @file.mtime
           @size = @file.size
+          @etag = @file.name.hash.to_s(16) + @mtime.hash.to_s(16)
           @buffer_size = buffer_size
         end
 
