@@ -125,6 +125,8 @@ module Rack::Archive
       class ExtractedFile
         BUFFER_SIZE = 8192
 
+        attr_reader :name, :mtime, :size
+
         # @param archive [Zip::Archive]
         # @param path [String]
         # @param buffer_size [Integer]
@@ -133,6 +135,9 @@ module Rack::Archive
           raise ArgumentError, 'archive already closed' unless archive.open?
           @archive = archive
           @file = @archive.fopen(path)
+          @name = @file.name
+          @mtime = @file.mtime
+          @size = @file.size
           @buffer_size = buffer_size
         end
 
@@ -140,18 +145,6 @@ module Rack::Archive
           while chunk = @file.read(@buffer_size)
             yield chunk
           end
-        end
-
-        def name
-          @file.name
-        end
-
-        def mtime
-          @file.mtime
-        end
-
-        def size
-          @file.size
         end
 
         def close
