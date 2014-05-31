@@ -57,9 +57,7 @@ module Rack::Archive
         }.select {|file| file}.first
         return NOT_FOUND if file.nil?
 
-        if_modified_since = env[IF_MODIFIED_SINCE]
-        if_modified_since = Time.parse(if_modified_since) if if_modified_since
-
+        if_modified_since = Time.parse(env[IF_MODIFIED_SINCE]) rescue nil
         if_none_match = env[IF_NONE_MATCH]
         etag = file.name.hash.to_s(16) + file.mtime.hash.to_s(16)
 
