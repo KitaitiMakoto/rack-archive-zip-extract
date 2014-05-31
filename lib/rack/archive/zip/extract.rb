@@ -57,11 +57,10 @@ module Rack::Archive
         }.select {|file| file}.first
         return NOT_FOUND if file.nil?
 
-        if_modified_since = Time.parse(env[IF_MODIFIED_SINCE]) rescue nil
+        if_modified_since = Time.parse(env[IF_MODIFIED_SINCE]) rescue Time.new(0)
         if_none_match = env[IF_NONE_MATCH]
 
-        if if_modified_since && file.mtime <= if_modified_since or
-            if_none_match && if_none_match == file.etag
+        if file.mtime <= if_modified_since or env[IF_NONE_MATCH] == file.etag
           file.close
           NOT_MODIFIED
         else
