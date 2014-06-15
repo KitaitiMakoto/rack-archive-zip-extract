@@ -143,7 +143,7 @@ class TestRackArchiveZipExtract < Test::Unit::TestCase
     # it is used to specify file path on file system when
     # Rack::Senfile or so is stacked on Rack builder.
     def test_not_respond_to_to_path
-      assert_false @file.respond_to? :to_path
+      assert_not_respond_to @file, :to_path
     end
 
     def test_cannot_initialize_with_closed_archive
