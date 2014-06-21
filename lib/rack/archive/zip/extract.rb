@@ -28,10 +28,12 @@ module Rack::Archive
       ETAG = 'ETag'.freeze
       REQUEST_METHOD = 'REQUEST_METHOD'.freeze
       PATH_INFO = 'PATH_INFO'.freeze
-      METHOD_NOT_ALLOWED = [status_code(:method_not_allowd), {'Allow'.freeze => Rack::File::ALLOWED_VERBS.join(', ').freeze}, []]
-      NOT_FOUND = [status_code(:not_found), {}, []]
-      NOT_MODIFIED = [status_code(:not_modified), {}, []]
-      DEFAULT_CONTENT_TYPE = 'application/octet-stream'.freeze
+      EMPTY_BODY = [].freeze
+      EMPTY_HEADERS = {}.freeze
+      METHOD_NOT_ALLOWED = [status_code(:method_not_allowd), {'Allow'.freeze => Rack::File::ALLOWED_VERBS.join(', ').freeze}.freeze, EMPTY_BODY]
+      NOT_FOUND = [status_code(:not_found), EMPTY_HEADERS, EMPTY_BODY].freeze
+      NOT_MODIFIED = [status_code(:not_modified), EMPTY_HEADERS, EMPTY_BODY].freeze
+      OCTET_STREAM = 'application/octet-stream'.freeze
 
       # @param root [Pathname, #to_path, String] path to document root
       # @param extensions [Array<String>] extensions which is recognized as a zip file
@@ -67,7 +69,7 @@ module Rack::Archive
           [
             status_code(:ok),
             {
-              CONTENT_TYPE => @mime_types.fetch(::File.extname(path_info), DEFAULT_CONTENT_TYPE),
+              CONTENT_TYPE => @mime_types.fetch(::File.extname(path_info), OCTET_STREAM),
               CONTENT_LENGTH => file.size.to_s,
               LAST_MODIFIED => file.mtime.httpdate,
               ETAG => file.etag
