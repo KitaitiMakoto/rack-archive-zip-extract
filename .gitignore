@@ -3,3 +3,4 @@ doc/
 test/sample.ext
 test/sample.zip
 pkg/
+coverage/

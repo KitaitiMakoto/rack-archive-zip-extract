@@ -1,3 +1,5 @@
+require 'simplecov'
+SimpleCov.start
 require 'test/unit'
 require 'test/unit/notify'
 require 'rack/lint'
