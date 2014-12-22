@@ -29,7 +29,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'rack', '>= 1.6'
   spec.add_runtime_dependency 'zipruby', '~> 0.3'
 
-  spec.add_development_dependency 'test-unit', '~> 2'
+  spec.add_development_dependency 'test-unit', '~> 3'
   spec.add_development_dependency 'test-unit-notify', '~> 1'
   spec.add_development_dependency 'yard', '~> 0.8'
   spec.add_development_dependency 'rubygems-tasks', '~> 0.2'
