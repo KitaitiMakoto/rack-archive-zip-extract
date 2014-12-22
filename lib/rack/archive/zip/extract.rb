@@ -17,7 +17,6 @@ module Rack::Archive
       include Rack::Utils
       extend Rack::Utils
 
-      SEPS = Rack::File::SEPS
       DOT = '.'.freeze
       DOUBLE_DOT = '..'.freeze
       CONTENT_TYPE = 'Content-Type'.freeze
@@ -113,7 +112,7 @@ module Rack::Archive
       # @return [Array<String>] segments of clean path
       # @see http://rubydoc.info/gems/rack/Rack/File#_call-instance_method Algorithm stolen from Rack::File#_call
       def path_info_to_clean_segments(path_info)
-        segments = path_info.split SEPS
+        segments = path_info.split PATH_SEPS
         clean = []
         segments.each do |segment|
           next if segment.empty? || segment == DOT

@@ -26,7 +26,7 @@ Gem::Specification.new do |spec|
   spec.homepage = 'http://rubydoc.info/gems/rack-archive-zip-extract/'
   spec.license = 'MIT'
 
-  spec.add_runtime_dependency 'rack', '~> 1'
+  spec.add_runtime_dependency 'rack', '>= 1.6'
   spec.add_runtime_dependency 'zipruby', '~> 0.3'
 
   spec.add_development_dependency 'test-unit', '~> 2'
