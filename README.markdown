@@ -53,7 +53,7 @@ By default, Rack::Archive::Zip::Extract uses [`Rack::Mime::MIME_TYPES`][mime_typ
 
     run Rack::Archive::Zip::Extract.new('path/to/docroot', mime_types: {'.html' => 'application/xhtml+xml', '.apk => 'application/vnd.android.package-archive'})
 
-In example above, Rack::Archive::Zip::Example sends "`Content-Type: application/xhtml+xml`" header for access to path with extension "`.html`" instead of "`text/html`" and "`application/vnd.android.package-archive`" for "`*.apk`" instead of default "`application/octet-stream`".
+In example above, Rack::Archive::Zip::Extract sends "`Content-Type: application/xhtml+xml`" header for access to path with extension "`.html`" instead of "`text/html`" and "`application/vnd.android.package-archive`" for "`*.apk`" instead of default "`application/octet-stream`".
 
 [mime_types]: http://rack.rubyforge.org/doc/Rack/Mime.html#MIME_TYPES
 
