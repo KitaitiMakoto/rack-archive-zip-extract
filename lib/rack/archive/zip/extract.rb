@@ -1,4 +1,5 @@
 require 'pathname'
+require 'digest/md5'
 require 'rack/utils'
 require 'rack/file'
 require 'rack/mime'
@@ -136,7 +137,7 @@ module Rack::Archive
           @file = @archive.fopen(path)
           @mtime = @file.mtime
           @size = @file.size
-          @etag = @file.name.hash.to_s(16) + @mtime.hash.to_s(16) + @size.hash.to_s(16)
+          @etag = Digest::MD5.hexdigest(@file.name) + @mtime.to_i.to_s(16) + @size.to_s(16)
           @buffer_size = buffer_size
         end
 
