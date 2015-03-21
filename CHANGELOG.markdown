@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+0.0.8
+-----
+
+* [BUG FIX]Calculate ETag properly
+
 0.0.7
 -----
 
