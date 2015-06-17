@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+0.0.9
+-----
+
+* Require Rack secure version: 1.6 -> 1.6.1
+
 0.0.8
 -----
 
