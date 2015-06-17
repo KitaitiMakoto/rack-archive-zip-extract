@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name = 'rack-archive-zip-extract'
-  spec.version = '0.0.8'
+  spec.version = '0.0.9'
   spec.summary = 'Zip file server'
   spec.description = 'Rack::Archive::Zip::Extract serves files in zip archives.'
   spec.authors = ['KITAITI Makoto']
